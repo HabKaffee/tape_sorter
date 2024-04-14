@@ -7,7 +7,8 @@ enum ExitCodes {
     kSuccess = 0,
     kFileIOError = 1,
     kFileParseError = 2,
-    kConfigValueNotFound = 3,
+    kSettingNotExists = 3,
+    kConfigValueNotFound = 4,
     
     kExitCodesMax // Should be last at enum
 };

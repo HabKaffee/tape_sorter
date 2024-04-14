@@ -1,12 +1,15 @@
 #include <iostream>
 
 #include "Constants.h"
-#include "TapeConfig.h"
+#include "TapeInterface.h"
 
 
 int main() {
     std::string configPath = "config/default.conf";
-    TapeConfig tapeCfg(configPath);
+    std::string fileToOpen = "testFile.txt";
+    TapeInterface iface(configPath, fileToOpen);
+
+
     std::cout << "Success" << std::endl;
     return kSuccess;
 }

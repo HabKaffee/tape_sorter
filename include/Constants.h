@@ -5,11 +5,14 @@
 
 enum ExitCodes {
     kSuccess = 0,
+    // Parsing
     kFileIOError = 1,
     kFileParseError = 2,
     kSettingNotExists = 3,
     kConfigValueNotFound = 4,
-    
+    // Work with files
+    kFileNotOpen = 5,
+
     kExitCodesMax // Should be last at enum
 };
 

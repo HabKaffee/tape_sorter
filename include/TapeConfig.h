@@ -13,8 +13,8 @@
 class TapeConfig {
  public:
     TapeConfig(std::string configPath);
-    TapeConfig(TapeConfig&) = delete;
-    TapeConfig(TapeConfig&&) = delete;
+    TapeConfig(TapeConfig&) = default;
+    TapeConfig(TapeConfig&&) = default;
 
     ~TapeConfig() = default;
 

@@ -19,15 +19,16 @@ TapeInterface::~TapeInterface() {
     delete this->tapeConfig;
 }
 
+// TODO: Fix behaviour
 void TapeInterface::changePosition(bool changeToTheLeft/* = false*/) {
     if (changeToTheLeft) {
-        inputFile.seekg(-2, inputFile.cur);
-        while (inputFile.get() != ' ') {
-            inputFile.seekg(-2, inputFile.cur);
+        while (inputFile.tellg() != inputFile.beg && inputFile.get() != ' ') {
+            inputFile.seekg(-1, inputFile.cur);
         }
-        // inputFile.seekg(-2, inputFile.cur);
     } else {
-        inputFile.seekg(4, inputFile.cur);
+        while (inputFile.tellg() != inputFile.end && inputFile.get() != ' ') {
+            inputFile.seekg(1, inputFile.cur);
+        }
     }
 }
 

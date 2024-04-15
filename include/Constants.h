@@ -13,6 +13,8 @@ enum ExitCodes {
     // Work with files
     kFileNotOpen = 5,
 
+    // Memory problems
+    kNotEnoughMemory = 6,
     kExitCodesMax // Should be last at enum
 };
 

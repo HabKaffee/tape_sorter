@@ -15,8 +15,12 @@ class TapeConfig {
     TapeConfig(std::string configPath);
     TapeConfig(TapeConfig&) = default;
     TapeConfig(TapeConfig&&) = default;
-
     ~TapeConfig() = default;
+
+    long long getWriteDelay();
+    long long getReadDelay();
+    long long getChangePositionDelay();
+    long long getTapeScrollDelay();
 
  private:
     std::string pathToFile;

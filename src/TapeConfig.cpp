@@ -47,9 +47,25 @@ std::uint8_t TapeConfig::readConfig(std::string configPath) {
 }
 
 void TapeConfig::printCurrentConfig() {
-        std::cout << "Current configurtion:" << std::endl;
-        std::cout << std::setw(22) << "writeDelay: " << this->writeDelay << std::endl
-                  << std::setw(22) << "readDelay: " << this->readDelay << std::endl
-                  << std::setw(22) << "changePositionDelay: " << this->changePositionDelay << std::endl
-                  << std::setw(22) << "tapeScrollDelay: " << this->tapeScrollDelay << std::endl;
-    }
+    std::cout << "Current configurtion:" << std::endl;
+    std::cout << std::setw(22) << "writeDelay: " << this->writeDelay << std::endl
+                << std::setw(22) << "readDelay: " << this->readDelay << std::endl
+                << std::setw(22) << "changePositionDelay: " << this->changePositionDelay << std::endl
+                << std::setw(22) << "tapeScrollDelay: " << this->tapeScrollDelay << std::endl;
+}
+
+long long TapeConfig::getWriteDelay() {
+    return writeDelay;
+}
+
+long long TapeConfig::getReadDelay() {
+    return readDelay;
+}
+
+long long TapeConfig::getChangePositionDelay() {
+    return changePositionDelay;
+}
+
+long long TapeConfig::getTapeScrollDelay() {
+    return tapeScrollDelay;
+}

@@ -3,9 +3,13 @@
 
 TapeInterface::TapeInterface(std::string configPath, std::string fileToRead) {
     this->tapeConfig = new TapeConfig(configPath);
+    if (this->tapeConfig == nullptr) {
+        std::cerr << "Can not allocate memory for tapeConfig" << std::endl;
+        std::exit(kNotEnoughMemory);
+    }
     inputFile.open(fileToRead);
     if (!inputFile.is_open()) {
-        std::cerr << "Can't open file '" << fileToRead << "'!" << std::endl;
+        std::cerr << "Can't open file '" << fileToRead << "'" << std::endl;
         delete this->tapeConfig;
         std::exit(kFileNotOpen);
     }
@@ -15,17 +19,16 @@ TapeInterface::~TapeInterface() {
     delete this->tapeConfig;
 }
 
-template<typename T>
-T TapeInterface::read() {
-
-}
-
-bool TapeInterface::write() {
-    return true;
-}
-
-void TapeInterface::changePosition(bool changeToTheLeft /* = false*/) {
-
+void TapeInterface::changePosition(bool changeToTheLeft/* = false*/) {
+    if (changeToTheLeft) {
+        inputFile.seekg(-2, inputFile.cur);
+        while (inputFile.get() != ' ') {
+            inputFile.seekg(-2, inputFile.cur);
+        }
+        // inputFile.seekg(-2, inputFile.cur);
+    } else {
+        inputFile.seekg(4, inputFile.cur);
+    }
 }
 
 void TapeInterface::scrollTape(int numOfPositions) {

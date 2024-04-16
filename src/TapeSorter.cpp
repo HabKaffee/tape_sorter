@@ -14,8 +14,8 @@ void TapeSorter<T>::findMaxValueOnTape() {
 
 template<typename T>
 void TapeSorter<T>::createTemporaryTapes() {
+    std::filesystem::create_directory("/tmp/tape_sorter/");
     for (size_t i = 0; i < numOfTempTapes; ++i) {
-        std::filesystem::create_directory("/tmp/tape_sorter/");
         std::string tmpName = "/tmp/tape_sorter/temp_tape" + std::to_string(i);
         temporaryTapes.push_back(new TapeInterface(tapeConfigPath, tmpName));
     }

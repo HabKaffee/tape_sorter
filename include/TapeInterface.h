@@ -25,7 +25,6 @@ class TapeInterface {
       T item;
       tapeData >> item;
       changePosition(/*changeToTheLeft = */true);
-      // std::cout << "curr pos = " << tapeData.pos << std::endl;
       return item;
     }
     

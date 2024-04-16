@@ -15,8 +15,8 @@ class TapeConfig;
 class TapeInterface {
  public:
     TapeInterface(std::string configPath, std::string fileToRead);
-    TapeInterface(TapeInterface&) = delete;
-    TapeInterface(TapeInterface&&) = delete;
+    TapeInterface(TapeInterface&) = default;
+    TapeInterface(TapeInterface&&) = default;
     ~TapeInterface();
 
     template<typename T>

@@ -3,6 +3,7 @@
 #include "Constants.h"
 #include "TapeConfig.h"
 #include "TapeInterface.h"
+#include "TapeSorter.h"
 
 
 int main() {
@@ -17,28 +18,33 @@ int main() {
     std::cout << std::endl;
     iface.scrollToStart();
 
-    auto item = iface.readItem<int>();
-    std::cout << "Item before change = " <<  item << std::endl;
-    iface.changePosition();
-    std::cout << iface.readItem<int>() << std::endl;
-    iface.changePosition(true);
-    std::cout << iface.readItem<int>() << std::endl;
-    iface.scrollTape(15);
-    std::cout << iface.readItem<int>() << std::endl;
-    iface.scrollTape(-15);
-    std::cout << iface.readItem<int>() << std::endl;
+    // auto item = iface.readItem<int>();
+    // std::cout << "Item before change = " <<  item << std::endl;
+    // iface.changePosition();
+    // std::cout << iface.readItem<int>() << std::endl;
+    // iface.changePosition(true);
+    // std::cout << iface.readItem<int>() << std::endl;
+    // iface.scrollTape(15);
+    // std::cout << iface.readItem<int>() << std::endl;
+    // iface.scrollTape(-15);
+    // std::cout << iface.readItem<int>() << std::endl;
 
-    iface.scrollToEnd();
-    std::cout << iface.readItem<int>() << std::endl;
-    iface.changePosition();
-    std::cout << "Scroll to end + change pos to right -> " << iface.isTapeEnded() << std::endl;
-    iface.changePosition(true);
-    std::cout << "is tape ended after move to left from end ? -> " << iface.isTapeEnded() << std::endl;
+    // iface.scrollToEnd();
+    // std::cout << iface.readItem<int>() << std::endl;
+    // iface.changePosition();
+    // std::cout << "Scroll to end + change pos to right -> " << iface.isTapeEnded() << std::endl;
+    // iface.changePosition(true);
+    // std::cout << "is tape ended after move to left from end ? -> " << iface.isTapeEnded() << std::endl;
 
-
-    iface.scrollToStart();
-    std::cout << iface.readItem<int>() << std::endl;
+    // iface.scrollToStart();
+    // std::cout << iface.readItem<int>() << std::endl;
     
+    TapeSorter<int> sorter("testFile.txt", "outFile.txt", "config/default.conf", 5);
+
+    // sorter.createTemporaryTapes();
+    sorter.findMaxValueOnTape();
+    std::cout << sorter.maxValueOnTape << std::endl;
+
     std::cout << "Success" << std::endl;
     return kSuccess;
 }

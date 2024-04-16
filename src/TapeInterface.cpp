@@ -1,15 +1,15 @@
 #include "Constants.h"
 #include "TapeInterface.h"
 
-TapeInterface::TapeInterface(std::string configPath, std::string fileToRead) {
+TapeInterface::TapeInterface(std::string configPath, std::string filepath) {
     this->tapeConfig = new TapeConfig(configPath);
     if (this->tapeConfig == nullptr) {
         std::cerr << "Can not allocate memory for tapeConfig" << std::endl;
         std::exit(kNotEnoughMemory);
     }
-    tapeData.open(fileToRead);
+    tapeData.open(filepath, std::fstream::in | std::fstream::out | std::fstream::app);
     if (!tapeData.is_open()) {
-        std::cerr << "Can't open file '" << fileToRead << "'" << std::endl;
+        std::cerr << "Can't open file '" << filepath << "'" << std::endl;
         delete this->tapeConfig;
         std::exit(kFileNotOpen);
     }

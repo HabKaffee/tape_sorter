@@ -6,7 +6,9 @@ TapeConfig::TapeConfig(std::string configPath) {
         std::cerr << "Config parsing failed" << std::endl;
         std::exit(ret);
     }
+    #ifdef DEBUG
     printCurrentConfig();
+    #endif
 }
 
 std::uint8_t TapeConfig::readConfig(std::string configPath) {
@@ -52,6 +54,7 @@ void TapeConfig::printCurrentConfig() {
                 << std::setw(22) << "readDelay: " << this->readDelay << std::endl
                 << std::setw(22) << "changePositionDelay: " << this->changePositionDelay << std::endl
                 << std::setw(22) << "tapeScrollDelay: " << this->tapeScrollDelay << std::endl;
+    std::cout << std::endl;
 }
 
 long long TapeConfig::getWriteDelay() {

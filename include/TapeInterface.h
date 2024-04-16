@@ -62,7 +62,7 @@ class TapeInterface {
     void scrollToEnd();
 
     bool isTapeEnded() {
-      return tapeData.eof();
+      return isEndRecovered;
     }
 
  private:
@@ -74,6 +74,7 @@ class TapeInterface {
 
     void changePositionImpl(bool changeToTheLeft = false);
 
+    bool isEndRecovered = false;
     TapeConfig* tapeConfig;
     std::fstream tapeData;
 };

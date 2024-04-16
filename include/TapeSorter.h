@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <memory>
 
 #include "TapeInterface.h"
 template<typename T>
@@ -31,7 +32,7 @@ class TapeSorter {
 
     void sortTape();
 
-//  private:
+ private:
     const size_t numOfTempTapes;
     const std::string tapeConfigPath;
     T maxValueOnTape;

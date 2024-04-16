@@ -98,6 +98,7 @@ void TapeInterface::scrollTape(int numOfPositions) {
 void TapeInterface::scrollToStart() {
     std::this_thread::sleep_for(std::chrono::nanoseconds(tapeConfig->getTapeScrollDelay()));
     tapeData.seekg(0);
+    isEndRecovered = false;
 }
 
 void TapeInterface::scrollToEnd() {

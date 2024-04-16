@@ -1,3 +1,4 @@
+#include <cmath>
 #include <filesystem>
 
 #include "TapeSorter.h"
@@ -16,14 +17,24 @@ template<typename T>
 void TapeSorter<T>::createTemporaryTapes() {
     std::filesystem::create_directory("/tmp/tape_sorter/");
     for (size_t i = 0; i < numOfTempTapes; ++i) {
-        std::string tmpName = "/tmp/tape_sorter/temp_tape" + std::to_string(i);
-        temporaryTapes.push_back(new TapeInterface(tapeConfigPath, tmpName));
+        std::string tmpName = "/tmp/tape_sorter/temp_tape" + std::to_string(i) + ".txt";
+        temporaryTapes[i] = new TapeInterface(tapeConfigPath, tmpName);
     }
 }
 
 template<typename T>
 void TapeSorter<T>::sortTape() {
-    
+    createTemporaryTapes();
+    findMaxValueOnTape();
+    int M = static_cast<int>(maxValueOnTape) + 1;
+    while (!inputTape->isTapeEnded()) {
+        T elem = inputTape->readItem<T>();
+        size_t tempTapeIdx = 
+            static_cast<size_t>(std::floor((numOfTempTapes * elem) / M));
+        temporaryTapes[tempTapeIdx]->writeItem<T>(elem);
+        inputTape->changePosition(/*changeToTheLeft =*/false);
+    }
+
 }
 
 template void TapeSorter<int>::createTemporaryTapes();

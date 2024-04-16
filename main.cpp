@@ -38,12 +38,13 @@ int main() {
 
     // iface.scrollToStart();
     // std::cout << iface.readItem<int>() << std::endl;
-    
-    TapeSorter<int> sorter("testFile.txt", "outFile.txt", "config/default.conf", 5);
-
+    TapeSorter<int> sorter("testFile.txt", "outFile.txt", "config/default.conf", 2);
     // sorter.createTemporaryTapes();
-    sorter.findMaxValueOnTape();
-    std::cout << sorter.maxValueOnTape << std::endl;
+    // sorter.temporaryTapes[0]->writeItem<int>(32);
+    // sorter.createTemporaryTapes();
+    // sorter.findMaxValueOnTape();
+    // std::cout << sorter.maxValueOnTape << std::endl;
+    sorter.sortTape();
 
     std::cout << "Success" << std::endl;
     return kSuccess;

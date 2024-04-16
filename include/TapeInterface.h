@@ -71,23 +71,7 @@ class TapeInterface {
       return tapeData.bad();
     }
 
-    void recoverInputStream(bool changedToLeft = false) {
-      if (changedToLeft) {
-        tapeData.seekg(0);
-        tapeData.clear();
-      } else {
-        tapeData.seekg(0, tapeData.end);
-        tapeData.clear();
-        
-        tapeData.unget();
-        char sym = tapeData.get();
-        while (sym != ' ') {
-          tapeData.putback(sym);
-          tapeData.unget();
-          sym = tapeData.get();
-        }
-      }
-    }
+    void recoverFileStream(bool changedToLeft = false);
 
     void changePositionImpl(bool changeToTheLeft = false);
 

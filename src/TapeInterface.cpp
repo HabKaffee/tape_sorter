@@ -20,28 +20,46 @@ TapeInterface::~TapeInterface() {
     delete this->tapeConfig;
 }
 
+void TapeInterface::recoverFileStream(bool changedToLeft/* = false*/) {
+    if (changedToLeft) {
+        tapeData.seekg(0);
+        tapeData.clear();
+    } else {
+        tapeData.seekg(0, tapeData.end);
+        tapeData.clear();
+        
+        tapeData.unget();
+        char sym = tapeData.get();
+        while (sym != ' ') {
+            tapeData.putback(sym);
+            tapeData.unget();
+            sym = tapeData.get();
+        }
+    }
+}
+
 void TapeInterface::changePositionImpl(bool changeToTheLeft/* = false*/) {
     if (changeToTheLeft) {
         tapeData.unget();
         if (isFileStreamBroken()) {
-            recoverInputStream(/*changedToLeft = */true);
+            recoverFileStream(/*changedToLeft = */true);
             return;
         }
         tapeData.unget();
         if (isFileStreamBroken()) {
-            recoverInputStream(/*changedToLeft = */true);
+            recoverFileStream(/*changedToLeft = */true);
             return;
         }
         char toRetrieve = tapeData.get();
         while (toRetrieve != ' ') {
             tapeData.unget();
             if (isFileStreamBroken()) {
-                recoverInputStream(/*changedToLeft = */true);
+                recoverFileStream(/*changedToLeft = */true);
                 return;
             }
             tapeData.unget();
             if (isFileStreamBroken()) {
-                recoverInputStream(/*changedToLeft = */true);
+                recoverFileStream(/*changedToLeft = */true);
                 return;
             }
             toRetrieve = tapeData.get();
@@ -53,7 +71,7 @@ void TapeInterface::changePositionImpl(bool changeToTheLeft/* = false*/) {
             }
         }
         if (tapeData.eof()) {
-            recoverInputStream(/*changedToLeft = */false);
+            recoverFileStream(/*changedToLeft = */false);
         }
     }
 }

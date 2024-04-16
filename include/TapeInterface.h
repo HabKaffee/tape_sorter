@@ -5,6 +5,7 @@
 #include <fstream>
 #include <string>
 #include <thread>
+#include <type_traits>
 #include <vector>
 
 #include "TapeConfig.h"
@@ -22,19 +23,21 @@ class TapeInterface {
     T readItem() {
       std::this_thread::sleep_for(std::chrono::nanoseconds(tapeConfig->getReadDelay()));
       T item;
-      inputFile >> item;
+      tapeData >> item;
+      changePosition(/*changeToTheLeft = */true);
+      // std::cout << "curr pos = " << tapeData.pos << std::endl;
       return item;
     }
     
     template<typename T>
     void writeItem(T toWrite) {
-      if (!inputFile.is_open()) {
-         std::cerr << "Tape can not be accessed. Aborting";
+      if (!tapeData.is_open()) {
+         std::cerr << "Tape can not be accessed. Aborting...";
          delete tapeConfig;
          std::exit(kFileNotOpen);
       }
       std::this_thread::sleep_for(std::chrono::nanoseconds(tapeConfig->getWriteDelay()));
-      inputFile << toWrite << " ";
+      tapeData << toWrite << " ";
     }
 
     template<class T>
@@ -42,6 +45,7 @@ class TapeInterface {
       std::vector<T> result;
       for (int i = 0; i < numOfItems; ++i) {
          result.emplace_back(readItem<T>());
+         changePosition(/*changeToTheLeft = */false);
       }
       return result;
     }
@@ -59,12 +63,36 @@ class TapeInterface {
     void scrollToEnd();
 
     bool isTapeEnded() {
-      return inputFile.eof();
+      return tapeData.eof();
     }
 
  private:
+    bool isFileStreamBroken() {
+      return tapeData.bad();
+    }
+
+    void recoverInputStream(bool changedToLeft = false) {
+      if (changedToLeft) {
+        tapeData.seekg(0);
+        tapeData.clear();
+      } else {
+        tapeData.seekg(0, tapeData.end);
+        tapeData.clear();
+        
+        tapeData.unget();
+        char sym = tapeData.get();
+        while (sym != ' ') {
+          tapeData.putback(sym);
+          tapeData.unget();
+          sym = tapeData.get();
+        }
+      }
+    }
+
+    void changePositionImpl(bool changeToTheLeft = false);
+
     TapeConfig* tapeConfig;
-    std::ifstream inputFile;
+    std::fstream tapeData;
 };
 
 #endif // TAPE_READER_H

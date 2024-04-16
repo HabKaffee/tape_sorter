@@ -7,8 +7,8 @@ TapeInterface::TapeInterface(std::string configPath, std::string fileToRead) {
         std::cerr << "Can not allocate memory for tapeConfig" << std::endl;
         std::exit(kNotEnoughMemory);
     }
-    inputFile.open(fileToRead);
-    if (!inputFile.is_open()) {
+    tapeData.open(fileToRead);
+    if (!tapeData.is_open()) {
         std::cerr << "Can't open file '" << fileToRead << "'" << std::endl;
         delete this->tapeConfig;
         std::exit(kFileNotOpen);
@@ -16,30 +16,75 @@ TapeInterface::TapeInterface(std::string configPath, std::string fileToRead) {
 }
 
 TapeInterface::~TapeInterface() {
+    tapeData.close();
     delete this->tapeConfig;
 }
 
-// TODO: Fix behaviour
-void TapeInterface::changePosition(bool changeToTheLeft/* = false*/) {
+void TapeInterface::changePositionImpl(bool changeToTheLeft/* = false*/) {
     if (changeToTheLeft) {
-        while (inputFile.tellg() != inputFile.beg && inputFile.get() != ' ') {
-            inputFile.seekg(-1, inputFile.cur);
+        tapeData.unget();
+        if (isFileStreamBroken()) {
+            recoverInputStream(/*changedToLeft = */true);
+            return;
+        }
+        tapeData.unget();
+        if (isFileStreamBroken()) {
+            recoverInputStream(/*changedToLeft = */true);
+            return;
+        }
+        char toRetrieve = tapeData.get();
+        while (toRetrieve != ' ') {
+            tapeData.unget();
+            if (isFileStreamBroken()) {
+                recoverInputStream(/*changedToLeft = */true);
+                return;
+            }
+            tapeData.unget();
+            if (isFileStreamBroken()) {
+                recoverInputStream(/*changedToLeft = */true);
+                return;
+            }
+            toRetrieve = tapeData.get();
         }
     } else {
-        while (inputFile.tellg() != inputFile.end && inputFile.get() != ' ') {
-            inputFile.seekg(1, inputFile.cur);
+        while (char sym = tapeData.get()) {
+            if (sym == ' ' || tapeData.eof()) {
+                break;
+            }
+        }
+        if (tapeData.eof()) {
+            recoverInputStream(/*changedToLeft = */false);
         }
     }
 }
 
-void TapeInterface::scrollTape(int numOfPositions) {
+void TapeInterface::changePosition(bool changeToTheLeft/* = false*/) {
+    std::this_thread::sleep_for(std::chrono::nanoseconds(tapeConfig->getChangePositionDelay()));
+    changePositionImpl(changeToTheLeft);
+}
 
+void TapeInterface::scrollTape(int numOfPositions) {
+    std::this_thread::sleep_for(std::chrono::nanoseconds(tapeConfig->getTapeScrollDelay()));
+    bool changeToTheLeft = numOfPositions < 0;
+    numOfPositions = std::abs(numOfPositions);
+
+    for (int i = 0; i < numOfPositions; ++i) {
+        changePositionImpl(changeToTheLeft);
+    }
 }
 
 void TapeInterface::scrollToStart() {
-
+    std::this_thread::sleep_for(std::chrono::nanoseconds(tapeConfig->getTapeScrollDelay()));
+    tapeData.seekg(0);
 }
 
 void TapeInterface::scrollToEnd() {
-
+    tapeData.seekg(0, tapeData.end);
+    tapeData.unget();
+    char sym = tapeData.get();
+    while (sym != ' ') {
+        tapeData.putback(sym);
+        tapeData.unget();
+        sym = tapeData.get();
+    }
 }

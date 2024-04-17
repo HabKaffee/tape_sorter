@@ -29,6 +29,7 @@ find_package(GTest REQUIRED)
 add_executable(
   tests
   tests/TapeSorterTest.cpp
+  tests/TapeInterfaceTest.cpp
   src/TapeConfig.cpp
   src/TapeInterface.cpp
   src/TapeSorter.cpp

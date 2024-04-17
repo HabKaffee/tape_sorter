@@ -24,7 +24,7 @@ class TapeInterface {
       std::this_thread::sleep_for(std::chrono::nanoseconds(tapeConfig->getReadDelay()));
       T item;
       tapeData >> item;
-      changePosition(/*changeToTheLeft = */true);
+      std::this_thread::sleep_for(std::chrono::nanoseconds(tapeConfig->getChangePositionDelay()));
       return item;
     }
     
@@ -40,17 +40,26 @@ class TapeInterface {
     }
 
     template<class T>
-    std::vector<T> read(int& numOfItems) {
+    std::vector<T> read(const int& numOfItems) {
       std::vector<T> result;
-      for (int i = 0; i < numOfItems; ++i) {
+      if (!tapeData.is_open()) {
+        std::cout << "File can't be accessed\n";
+        return std::vector<T>();
+      }
+      if (numOfItems == -1) {
+        while(!isTapeEnded()) {
+          result.emplace_back(readItem<T>());
+        }
+        return result;
+      }
+      for (int i = 0; !isTapeEnded() && (i < numOfItems); ++i) {
          result.emplace_back(readItem<T>());
-         changePosition(/*changeToTheLeft = */false);
       }
       return result;
     }
 
     template<class T>
-    void write(std::vector<T> toWrite) {
+    void write(std::vector<T>& toWrite) {
       for (auto item: toWrite) {
          writeItem(item);
       }
@@ -62,7 +71,11 @@ class TapeInterface {
     void scrollToEnd();
 
     bool isTapeEnded() {
-      return isEndRecovered;
+      return tapeData.eof() || isEndRecovered;
+    }
+
+    bool isTapeEmpty() {
+      return tapeData.peek() == std::fstream::traits_type::eof();
     }
 
  private:

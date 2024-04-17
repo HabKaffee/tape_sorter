@@ -24,19 +24,21 @@ void TapeInterface::recoverFileStream(bool changedToLeft/* = false*/) {
     if (changedToLeft) {
         tapeData.seekg(0);
         tapeData.clear();
-    } else {
-        tapeData.seekg(0, tapeData.end);
-        tapeData.clear();
-        
-        tapeData.unget();
-        char sym = tapeData.get();
-        while (sym != ' ') {
-            tapeData.putback(sym);
-            tapeData.unget();
-            sym = tapeData.get();
-        }
-        isEndRecovered = true;
+        isEndRecovered = false;
+        return;
     }
+    tapeData.seekg(0, tapeData.end);
+    tapeData.clear();
+    
+    tapeData.unget();
+    char sym = tapeData.get();
+    while (sym != ' ') {
+        tapeData.unget();
+        tapeData.unget();
+        sym = tapeData.get();
+    }
+    isEndRecovered = true;
+    
 }
 
 void TapeInterface::changePositionImpl(bool changeToTheLeft/* = false*/) {
@@ -65,9 +67,7 @@ void TapeInterface::changePositionImpl(bool changeToTheLeft/* = false*/) {
             }
             toRetrieve = tapeData.get();
         }
-        if (isEndRecovered) {
-            isEndRecovered = false;
-        }
+        isEndRecovered = false;
     } else {
         while (char sym = tapeData.get()) {
             if (sym == ' ' || tapeData.eof()) {
@@ -98,6 +98,7 @@ void TapeInterface::scrollTape(int numOfPositions) {
 void TapeInterface::scrollToStart() {
     std::this_thread::sleep_for(std::chrono::nanoseconds(tapeConfig->getTapeScrollDelay()));
     tapeData.seekg(0);
+    tapeData.clear();
     isEndRecovered = false;
 }
 

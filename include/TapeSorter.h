@@ -43,6 +43,7 @@ class TapeSorter {
     
     void findMaxValueOnTape();
     void createTemporaryTapes();
+    std::vector<T> sortTemporaryTape(size_t idx);
 };
 
 #endif // TAPE_SORTER_H

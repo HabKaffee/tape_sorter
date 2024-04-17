@@ -1,4 +1,8 @@
+#include <cmath>
+#include <chrono>
+#include <filesystem>
 #include <iostream>
+#include <random>
 
 #include "Constants.h"
 #include "TapeConfig.h"
@@ -6,44 +10,32 @@
 #include "TapeSorter.h"
 
 
-int main() {
-    std::string configPath = "config/default.conf";
-    std::string fileToOpen = "testFile.txt";
-    TapeInterface iface(configPath, fileToOpen);
-    std::cout << "Full tape data:" << std::endl;
-    while (!iface.isTapeEnded()) {
-        std::cout << iface.readItem<int>() << "\t";
-        iface.changePosition(false);
+int main(int argc, char** argv) {
+    if (argc < 3) {
+        std::cerr << "You should provide path to input file, output file and configuration file(optional)" << std::endl;
+        std::exit(kConfigValueNotFound);
     }
-    std::cout << std::endl;
-    iface.scrollToStart();
+    std::string inputTapePath, outputTapePath, configPath;
+    if (argc >= 3) {
+        inputTapePath = std::string(argv[1]);
+        outputTapePath = std::string(argv[2]);
+        if (argc > 3) {
+            configPath = std::string(argv[3]);
+        }
+    }
 
-    // auto item = iface.readItem<int>();
-    // std::cout << "Item before change = " <<  item << std::endl;
-    // iface.changePosition();
-    // std::cout << iface.readItem<int>() << std::endl;
-    // iface.changePosition(true);
-    // std::cout << iface.readItem<int>() << std::endl;
-    // iface.scrollTape(15);
-    // std::cout << iface.readItem<int>() << std::endl;
-    // iface.scrollTape(-15);
-    // std::cout << iface.readItem<int>() << std::endl;
+    if (std::filesystem::exists(std::filesystem::temp_directory_path() / "tape_sorter")) {
+        for (auto& path : std::filesystem::directory_iterator(
+                std::filesystem::temp_directory_path() / "tape_sorter")) {
+            std::filesystem::remove(path);
+        }
+    }
+    
+    if (configPath.empty()) {
+        configPath = "config/default.conf";
+    }
 
-    // iface.scrollToEnd();
-    // std::cout << iface.readItem<int>() << std::endl;
-    // iface.changePosition();
-    // std::cout << "Scroll to end + change pos to right -> " << iface.isTapeEnded() << std::endl;
-    // iface.changePosition(true);
-    // std::cout << "is tape ended after move to left from end ? -> " << iface.isTapeEnded() << std::endl;
-
-    // iface.scrollToStart();
-    // std::cout << iface.readItem<int>() << std::endl;
-    TapeSorter<int> sorter("testFile.txt", "outFile.txt", "config/default.conf", 2);
-    // sorter.createTemporaryTapes();
-    // sorter.temporaryTapes[0]->writeItem<int>(32);
-    // sorter.createTemporaryTapes();
-    // sorter.findMaxValueOnTape();
-    // std::cout << sorter.maxValueOnTape << std::endl;
+    TapeSorter<int> sorter(inputTapePath, outputTapePath, configPath, 10);
     sorter.sortTape();
 
     std::cout << "Success" << std::endl;

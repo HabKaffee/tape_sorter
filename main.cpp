@@ -17,6 +17,10 @@ int main(int argc, char** argv) {
     if (argc >= 3) {
         inputTapePath = std::string(argv[1]);
         outputTapePath = std::string(argv[2]);
+        if (!std::filesystem::exists(outputTapePath)) {
+            std::ofstream tmp(outputTapePath);
+            tmp.close();
+        }
         if (argc > 3) {
             configPath = std::string(argv[3]);
         }

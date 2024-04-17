@@ -20,6 +20,8 @@ void TapeSorter<T>::createTemporaryTapes() {
     for (size_t i = 0; i < numOfTempTapes; ++i) {
         std::string tmpName = 
             basePath + "temp_tape" + std::to_string(i) + ".txt";
+        std::ofstream tmp(tmpName);
+        tmp.close();
         temporaryTapes[i] = new TapeInterface(tapeConfigPath, tmpName);
     }
 }

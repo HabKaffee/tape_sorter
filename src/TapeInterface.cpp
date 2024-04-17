@@ -7,7 +7,7 @@ TapeInterface::TapeInterface(std::string configPath, std::string filepath) {
         std::cerr << "Can not allocate memory for tapeConfig" << std::endl;
         std::exit(kNotEnoughMemory);
     }
-    tapeData.open(filepath, std::fstream::in | std::fstream::out | std::fstream::app);
+    tapeData.open(filepath);
     if (!tapeData.is_open()) {
         std::cerr << "Can't open file '" << filepath << "'" << std::endl;
         delete this->tapeConfig;

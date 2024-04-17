@@ -50,6 +50,7 @@ class TapeInterface {
         while(!isTapeEnded()) {
           result.emplace_back(readItem<T>());
         }
+        result.pop_back();
         return result;
       }
       for (int i = 0; !isTapeEnded() && (i < numOfItems); ++i) {

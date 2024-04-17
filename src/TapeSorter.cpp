@@ -44,6 +44,10 @@ void TapeSorter<T>::sortTape() {
             continue;
         }
         int bucketRatio = static_cast<int>(maxValueOnTape / static_cast<double>(numOfTempTapes));
+        if (elem >= bucketRatio * static_cast<int>(numOfTempTapes)) {
+            temporaryTapes[numOfTempTapes - 1]->writeItem<T>(elem);
+            continue;
+        }
         for (int i = 1; i <= static_cast<int>(numOfTempTapes); ++i) {
             if (elem >= (bucketRatio * (i - 1)) && elem < (bucketRatio * i)) {
                 temporaryTapes[i - 1]->writeItem<T>(elem);

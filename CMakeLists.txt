@@ -42,10 +42,10 @@ target_link_libraries(
 )
 add_test(AllTests tests)
 
-add_custom_command(TARGET tests
-    POST_BUILD
-    COMMAND ./tests
-)
+# add_custom_command(TARGET tests
+#     POST_BUILD
+#     COMMAND ./tests
+# )
 
 
 # include(GoogleTest)

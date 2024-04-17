@@ -38,7 +38,6 @@ void TapeInterface::recoverFileStream(bool changedToLeft/* = false*/) {
         sym = tapeData.get();
     }
     isEndRecovered = true;
-    
 }
 
 void TapeInterface::changePositionImpl(bool changeToTheLeft/* = false*/) {
